@@ -8,7 +8,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"]
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"]
 )
 
 @app.get("/")
@@ -61,7 +62,7 @@ def add_product(product:Product,db:Session = Depends(get_db)):
     db.commit()
     return product
 
-@app.put("/products")
+@app.put("/products/{id}")
 def update_product(id:int, product:Product,db:Session = Depends(get_db)):
     db_product = db.query(database_models.Product).filter(database_models.Product.id==id).first()
     if db_product:
@@ -74,7 +75,7 @@ def update_product(id:int, product:Product,db:Session = Depends(get_db)):
     else:
         "no update"
 
-@app.delete("/products")
+@app.delete("/products/{id}")
 def delete_product(id: int, db: Session = Depends(get_db)):
     db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
     if db_product:
